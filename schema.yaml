@@ -1,0 +1,15 @@
+schemas:
+  imbalance_data:
+    columns:
+      id: "int64"
+      label: "int64"
+      tweet: "object"
+      
+  raw_data:
+    columns:  
+      count: "int64"
+      hate_speech: "int64"  # Changed from "integer" to match pandas dtype
+      offensive_language: "int64"
+      neither: "int64"
+      class: "int64"
+      tweet: "object"
