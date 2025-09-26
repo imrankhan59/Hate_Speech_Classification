@@ -3,3 +3,5 @@ myenv/
 .env
 logs/
 data
+mlruns/
+mlartifacts/
