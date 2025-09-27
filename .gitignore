@@ -2,7 +2,9 @@ test.py
 myenv/
 .env
 logs/
-data
+data/*.csv
 mlruns/
 mlartifacts/
 artifacts/
+.dvc/cache/
+!data/*.dvc
