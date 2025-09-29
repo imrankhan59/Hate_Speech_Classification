@@ -98,88 +98,98 @@ class ModelEvaluation:
             logging.info("Starting MLflow run...")
             setup_mlflow()
 
-            with mlflow.start_run(run_name = "model evauation" , nested=True) as run:
+            with mlflow.start_run(run_name="model_evaluation", nested=True) as run:
 
-                #trained_model = keras.models.load_model(self.model_trainer_artifacts.train_model_path)
+                # Create evaluation directory
                 os.makedirs(self.model_evaluation_config.MODEL_EVALUATION_DIR, exist_ok=True)
 
+                # Load last trained model
                 with open("artifacts/ModelTrainerArtifacts/last_run_id.txt", "r") as f:
-                        run_id = f.read().strip()
+                    run_id = f.read().strip()
 
                 logging.info(f"Loading model from mlflow model_uri {run_id}")
-
                 logged_model_uri = f"runs:/{run_id}/model"
                 trained_model = mlflow.keras.load_model(logged_model_uri)
 
+                # Load tokenizer
                 with open('tokenizer.pickle', 'rb') as f:
                     tokenizer = pickle.load(f)
 
-                trained_metrices = self.evaluation(trained_model, tokenizer)
-                with open(model_evaluation_config.METRICS_FILE_PATH, "w") as f:
-                    json.dump(trained_metrices, f, indent=4)
+                # Evaluate trained model
+                trained_metrics = self.evaluation(trained_model, tokenizer)
+                with open(self.model_evaluation_config.METRICS_FILE_PATH, "w") as f:
+                    json.dump(trained_metrics, f, indent=4)
 
-                mlflow.log_metrics(trained_metrices)
-                logging.info(f"Trained Model accuracy {trained_metrices}")
+                mlflow.log_metrics(trained_metrics)
+                logging.info(f"Trained Model metrics: {trained_metrics}")
 
+                # Register model
                 logging.info("Registering trained model to MLflow Model Registry")
                 model_details = mlflow.register_model(logged_model_uri, "LSTM")
-
                 client = MlflowClient()
 
+                # Try to load current Production model
                 try:
-                    prod_model_uri = f"models:/{PROD_MODEL_NAME}@production"
+                    prod_model_uri = "models:/LSTM/Production"
                     prod_model = mlflow.keras.load_model(prod_model_uri)
                     logging.info("Found existing Production model.")
                 except Exception:
-                    logging.info("No Production model registered yet.")
+                    logging.info("No Production model exists yet.")
                     prod_model = None
 
-                # Case 1: No production model yet
+                # Case 1: No Production model yet
                 if prod_model is None:
                     logging.info("Promoting trained model to Production since no Production model exists.")
-                    client.set_registered_model_alias(
-                        name=NEW_MODEL_NAME,
-                        alias="production",
-                        version=model_details.version
-                )
-
+                    client.transition_model_version_stage(
+                        name="LSTM",
+                        version=model_details.version,
+                        stage="Production"
+                    )
                     is_model_accepted = True
 
-            # ---------------- Case 2: Production model exists ----------------
+                # Case 2: Production model exists
                 else:
                     prod_metrics = self.evaluation(prod_model, tokenizer)
                     logging.info(f"Production Model metrics: {prod_metrics}")
 
-                    if trained_metrices["accuracy"] > prod_metrics["accuracy"]:
+                    if trained_metrics["accuracy"] > prod_metrics["accuracy"]:
                         logging.info("Trained model outperforms Production. Promoting to Production.")
-                        client.set_registered_model_alias(
-                            name=NEW_MODEL_NAME,
-                            alias="production",
-                            version=model_details.version
+                        # Promote new model to Production
+                        client.transition_model_version_stage(
+                            name="LSTM",
+                            version=model_details.version,
+                            stage="Production"
                         )
+                        # Optionally archive old Production model
+                        old_prod_versions = [
+                            v.version
+                            for v in client.get_latest_versions("LSTM", stages=["Production"])
+                            if v.version != model_details.version
+                        ]
+                        for v in old_prod_versions:
+                            client.transition_model_version_stage(
+                                name="LSTM",
+                                version=v,
+                                stage="Archived"
+                            )
+                            logging.info(f"Archived old Production model version {v}")
+
                         is_model_accepted = True
- 
                     else:
                         logging.info("Production model is better. Moving trained model to Staging.")
-                        client.set_registered_model_alias(
-                            name=NEW_MODEL_NAME,
-                            alias = "stagging",
-                            version=model_details.version
-                        )
-                        is_model_accepted = False   
-
-
                         client.transition_model_version_stage(
-                        name=NEW_MODEL_NAME,
-                        version=model_details.version,
-                        stage="Archived"
-                        )  
-                        logging.info(f"Archived model version {model_details.version} for {NEW_MODEL_NAME}.")                                
+                            name="LSTM",
+                            version=model_details.version,
+                            stage="Staging"
+                        )
+                        is_model_accepted = False
 
-                model_evaluation_artifacts = ModelEvaluationArtifact(is_model_accepted = is_model_accepted)
+                model_evaluation_artifacts = ModelEvaluationArtifact(is_model_accepted=is_model_accepted)
                 return model_evaluation_artifacts
+
         except Exception as e:
-            raise CustomException(e, sys)    
+            raise CustomException(e, sys)
+    
         
 
 if __name__ == "__main__":

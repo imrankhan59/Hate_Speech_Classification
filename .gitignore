@@ -8,3 +8,5 @@ mlartifacts/
 artifacts/
 .dvc/cache/
 !data/*.dvc
+tokenizer.pickle
+mlflow.db

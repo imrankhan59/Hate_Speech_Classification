@@ -1,0 +1,114 @@
+schema: '2.0'
+stages:
+  data_validation:
+    cmd: python src/components/data_validation.py
+    deps:
+    - path: data/imb_data.csv
+      hash: md5
+      md5: 50c0df6093dab2487c21954e0df49a3d
+      size: 3135128
+    - path: data/raw_data.csv
+      hash: md5
+      md5: 6ac97bca4efbcac959ef159dc6e105ba
+      size: 2433063
+    - path: src/components/data_validation.py
+      hash: md5
+      md5: 79fbd69a85064e806363b8b53e45faaa
+      size: 3627
+    outs:
+    - path: artifacts/DataValidationArtifacts/data_validation_report.yaml
+      hash: md5
+      md5: 99331b3048e08f99293bd544625e1443
+      size: 14
+  data_transformation:
+    cmd: python src/components/data_transformation.py
+    deps:
+    - path: artifacts/DataValidationArtifacts/data_validation_report.yaml
+      hash: md5
+      md5: 99331b3048e08f99293bd544625e1443
+      size: 14
+    - path: data/imb_data.csv
+      hash: md5
+      md5: 50c0df6093dab2487c21954e0df49a3d
+      size: 3135128
+    - path: data/raw_data.csv
+      hash: md5
+      md5: 6ac97bca4efbcac959ef159dc6e105ba
+      size: 2433063
+    - path: src/components/data_transformation.py
+      hash: md5
+      md5: 14bde816a3065ba7d4a3a4eb4220de1c
+      size: 7992
+    outs:
+    - path: artifacts/DataTransformationArtifacts/transformed_data.csv
+      hash: md5
+      md5: 565aafb77a1ef777785d31d60d9c1e18
+      size: 3469405
+  model_trainer:
+    cmd: python src/components/model_trainer.py
+    deps:
+    - path: artifacts/DataTransformationArtifacts/transformed_data.csv
+      hash: md5
+      md5: 565aafb77a1ef777785d31d60d9c1e18
+      size: 3469405
+    - path: params.yaml
+      hash: md5
+      md5: 6beb9afa9788a80f757a18ed37776746
+      size: 273
+    - path: src/components/model_trainer.py
+      hash: md5
+      md5: 14dd03de735db8f4c6179581f7197d60
+      size: 9361
+    outs:
+    - path: artifacts/ModelTrainerArtifacts/model.h5
+      hash: md5
+      md5: 190f94011cc09eb591c9d8cd98075ac9
+      size: 52686488
+    - path: artifacts/ModelTrainerArtifacts/x_test.csv
+      hash: md5
+      md5: 0eee7c3e442ac8e05743c33aed9fe28f
+      size: 922957
+    - path: artifacts/ModelTrainerArtifacts/x_train.csv
+      hash: md5
+      md5: 7942010e438db4cbf296b985dd83eb89
+      size: 2762313
+    - path: artifacts/ModelTrainerArtifacts/y_test.csv
+      hash: md5
+      md5: 6ab0ca66fc294ec58c93452f33d54e9f
+      size: 124853
+    - path: tokenizer.pickle
+      hash: md5
+      md5: f7e97e6ed616f6fa2ba666dcbb0f3ddb
+      size: 2154508
+  model_evaluation:
+    cmd: python src/components/model_evaluation.py
+    deps:
+    - path: artifacts/ModelTrainerArtifacts/model.h5
+      hash: md5
+      md5: 190f94011cc09eb591c9d8cd98075ac9
+      size: 52686488
+    - path: artifacts/ModelTrainerArtifacts/x_test.csv
+      hash: md5
+      md5: 0eee7c3e442ac8e05743c33aed9fe28f
+      size: 922957
+    - path: artifacts/ModelTrainerArtifacts/y_test.csv
+      hash: md5
+      md5: 6ab0ca66fc294ec58c93452f33d54e9f
+      size: 124853
+    - path: params.yaml
+      hash: md5
+      md5: 6beb9afa9788a80f757a18ed37776746
+      size: 273
+    - path: src/components/model_evaluation.py
+      hash: md5
+      md5: 4070fc6c65c756f494383bca2320f1ce
+      size: 9592
+    - path: tokenizer.pickle
+      hash: md5
+      md5: f7e97e6ed616f6fa2ba666dcbb0f3ddb
+      size: 2154508
+    outs:
+    - path: artifacts/ModelEvaluationArtifacts/metrics.json
+      hash: md5
+      md5: 01848c03447aad955efbdf120e34822c
+      size: 215

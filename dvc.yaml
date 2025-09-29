@@ -1,0 +1,49 @@
+stages:
+  data_validation:
+    cmd: python src/components/data_validation.py
+    deps:
+      - src/components/data_validation.py
+      - data/raw_data.csv
+      - data/imb_data.csv
+
+    outs:
+      - artifacts/DataValidationArtifacts/data_validation_report.yaml
+
+  data_transformation:
+    cmd: python src/components/data_transformation.py
+    deps:
+     - src/components/data_transformation.py
+     - data/raw_data.csv
+     - data/imb_data.csv
+     - artifacts/DataValidationArtifacts/data_validation_report.yaml
+
+    outs:
+     - artifacts/DataTransformationArtifacts/transformed_data.csv
+
+  
+  model_trainer:
+    cmd: python src/components/model_trainer.py
+    deps:
+      - src/components/model_trainer.py
+      - artifacts/DataTransformationArtifacts/transformed_data.csv
+      - params.yaml
+    
+    outs:
+      - artifacts/ModelTrainerArtifacts/model.h5
+      - artifacts/ModelTrainerArtifacts/x_test.csv
+      - artifacts/ModelTrainerArtifacts/x_train.csv
+      - artifacts/ModelTrainerArtifacts/y_test.csv
+      - tokenizer.pickle
+
+  model_evaluation:
+    cmd: python src/components/model_evaluation.py
+    deps:
+      - src/components/model_evaluation.py
+      - artifacts/ModelTrainerArtifacts/model.h5
+      - artifacts/ModelTrainerArtifacts/x_test.csv
+      - artifacts/ModelTrainerArtifacts/y_test.csv
+      - tokenizer.pickle
+      - params.yaml
+
+    metrics:
+      - artifacts/ModelEvaluationArtifacts/metrics.json
