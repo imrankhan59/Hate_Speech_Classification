@@ -1,4 +1,5 @@
 [core]
     remote = origin
-['remote "origin"']
+
+[remote "origin"]
     url = https://dagshub.com/imrankhan59/Hate_Speech_Classification.dvc
