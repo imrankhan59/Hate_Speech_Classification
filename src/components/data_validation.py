@@ -5,13 +5,11 @@ import numpy as np
 import pandas as pd
 from src.logger import logging
 from src.exception import CustomException
-from src.components.data_ingestion import DataIngestion
 from src.entity.config_entity import DataValidationConfig, DataIngestionConfig
-from src.entity.artifact_entity import DataIngestionArtifact, DataValidationArtifact
+from src.entity.artifact_entity import  DataValidationArtifact
 
 class DataValidation:
-    def __init__(self, data_ingestion_artifact: DataIngestionArtifact, data_validation_config: DataValidationConfig):
-        self.data_ingestion_artifact = data_ingestion_artifact
+    def __init__(self, data_validation_config: DataValidationConfig):
         self.data_validation_config = data_validation_config
 
     def validate_column_names(self, df: pd.DataFrame, schema: dict, dataset_name) -> bool:
@@ -30,8 +28,8 @@ class DataValidation:
 
             imbalance_data = self.data_ingestion_artifact.imbalance_data_file_path
             raw_data = self.data_ingestion_artifact.raw_data_file_path
-            imbalance_data_df = pd.read_csv(imbalance_data)
-            raw_data_df = pd.read_csv(raw_data)
+            imbalance_data_df = pd.read_csv("data/imb_data.csv")
+            raw_data_df = pd.read_csv("data/raw_data.csv")
 
             logging.info("data loaded successfully")
 
@@ -69,8 +67,5 @@ if __name__ == "__main__":
     data_ingestion_config = DataIngestionConfig()
     data_validation_config = DataValidationConfig()
 
-    data_ingestion = DataIngestion(data_ingestion_config=data_ingestion_config)
-    data_ingestion_artifact = data_ingestion.initiate_data_ingestion()
-
-    data_validation = DataValidation(data_ingestion_artifact=data_ingestion_artifact, data_validation_config=data_validation_config)
+    data_validation = DataValidation(data_validation_config=data_validation_config)
     data_validation.initiate_data_validation()
