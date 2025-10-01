@@ -1,9 +1,14 @@
 import mlflow
 import yaml
+import os
 
 
 def setup_mlflow():
-    mlflow.set_tracking_uri("http://127.0.0.1:5000") 
+    # Use DAGsHub URI from environment if set, otherwise fallback to local mlruns
+    tracking_uri = os.getenv("MLFLOW_TRACKING_URI", "file:./mlruns")
+    mlflow.set_tracking_uri(tracking_uri)
+    
+    # Set your experiment
     mlflow.set_experiment("LSTM_Hate_Speech_Classification")
 
 
