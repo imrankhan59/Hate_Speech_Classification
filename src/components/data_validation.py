@@ -24,10 +24,7 @@ class DataValidation:
     def initiate_data_validation(self) -> DataValidationArtifact:
         try:
             logging.info("starting data validation")
-            logging.info("loading data from ingestion artifact")
 
-            imbalance_data = self.data_ingestion_artifact.imbalance_data_file_path
-            raw_data = self.data_ingestion_artifact.raw_data_file_path
             imbalance_data_df = pd.read_csv("data/imb_data.csv")
             raw_data_df = pd.read_csv("data/raw_data.csv")
 
