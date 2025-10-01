@@ -10,9 +10,8 @@ from sklearn.model_selection import train_test_split
 from src.logger import logging
 from src.exception import CustomException
 
-from src.entity.config_entity import DataTransformationConfig, DataIngestionConfig, DataValidationConfig
-from src.entity.artifact_entity import DataIngestionArtifact, DataValidationArtifact, DataTransformationArtifact
-from src.components.data_ingestion import DataIngestion
+from src.entity.config_entity import DataTransformationConfig, DataValidationConfig
+from src.entity.artifact_entity import  DataValidationArtifact, DataTransformationArtifact
 from src.components.data_validation import DataValidation
 
 
@@ -21,10 +20,10 @@ nltk.download('stopwords')
 stopword = set(stopwords.words('english'))
 
 class DataTransformation:
-    def __init__(self, data_ingestion_artifact: DataIngestionArtifact, 
+    def __init__(self,
                  data_validation_artifact: DataValidationArtifact, 
                  data_transformation_config: DataTransformationConfig):
-        self.data_ingestion_artifact = data_ingestion_artifact
+        
         self.data_validation_artifact = data_validation_artifact
         self.data_transformation_config = data_transformation_config
 
@@ -104,8 +103,8 @@ class DataTransformation:
             logging.info(f"Data validation status {report['STATUS']}")
 
             logging.info("Data validation passed. Proceeding with data transformation.")
-            imbalance_data_file_path = self.data_ingestion_artifact.imbalance_data_file_path
-            raw_data_file_path = self.data_ingestion_artifact.raw_data_file_path
+            imbalance_data_file_path = "data/imb_data.csv"
+            raw_data_file_path = "data/raw_data.csv"
 
             imbalance_data = self.imbalance_data_cleaning(imbalance_data_file_path)
             raw_data = self.raw_data_cleaning(raw_data_file_path)
@@ -143,15 +142,12 @@ class DataTransformation:
             raise CustomException(e, sys)
 
 if __name__ == "__main__":
-    data_ingestion_config = DataIngestionConfig()
+
     data_validation_config = DataValidationConfig()
     data_transformation_config = DataTransformationConfig()
 
-    data_ingestion = DataIngestion(data_ingestion_config=data_ingestion_config)
-    data_ingestion_artifact = data_ingestion.initiate_data_ingestion()
-
-    data_validation = DataValidation(data_ingestion_artifact=data_ingestion_artifact, data_validation_config=data_validation_config)
+    data_validation = DataValidation(data_validation_config=data_validation_config)
     data_validation_artifact = data_validation.initiate_data_validation()
 
-    data_transformation = DataTransformation(data_ingestion_artifact = data_ingestion_artifact, data_validation_artifact = data_validation_artifact, data_transformation_config = data_transformation_config)
+    data_transformation = DataTransformation(data_validation_artifact = data_validation_artifact, data_transformation_config = data_transformation_config)
     data_transformation.initiate_data_transformation()
