@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 from src.logger import logging
 from src.exception import CustomException
-from src.entity.config_entity import DataValidationConfig, DataIngestionConfig
+from src.entity.config_entity import DataValidationConfig
 from src.entity.artifact_entity import  DataValidationArtifact
 
 class DataValidation:
@@ -51,17 +51,13 @@ class DataValidation:
                 with open(self.data_validation_config.DATA_VALIDATION_REPORT_FILE_PATH, 'w') as report_file:
                     report = {'STATUS': True}
                     yaml.dump(report, report_file)
-
-            data_validation_artifact = DataValidationArtifact(
-                data_validation_report_file_path=self.data_validation_config.DATA_VALIDATION_REPORT_FILE_PATH
-            )
-            return data_validation_artifact
+            logging.info("data validation report created")
         except Exception as e:
             raise CustomException(e, sys)
         
 
 if __name__ == "__main__":
-    data_ingestion_config = DataIngestionConfig()
+
     data_validation_config = DataValidationConfig()
 
     data_validation = DataValidation(data_validation_config=data_validation_config)

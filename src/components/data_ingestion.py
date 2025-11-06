@@ -51,23 +51,16 @@ class DataIngestion:
 
 
     def initiate_data_ingestion(self) -> DataIngestionArtifact:
-        logging.info("Entered the initiate_data_ingestion method inside DataIngestion class")
         try:
+            logging.info("Starting data ingestion")
             raw_data_path, imbalance_data_path = self.load_data()
-            logging.info("Data loaded and paths are returned")
-
-            data_ingestion_artifact = DataIngestionArtifact(
-                imbalance_data_file_path=imbalance_data_path,
-                raw_data_file_path=raw_data_path
-            )
-
-            logging.info(f"Data Ingestion artifacts : {data_ingestion_artifact}")
-            return data_ingestion_artifact
+            logging.info("Data loaded successfully")
         except Exception as e:
             raise CustomException(e, sys) from e
 
 
 if __name__ == "__main__":
+    
     data_ingest_config = DataIngestionConfig()
     obj = DataIngestion(data_ingestion_config=data_ingest_config)
     obj.initiate_data_ingestion()

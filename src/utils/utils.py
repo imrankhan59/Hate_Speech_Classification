@@ -1,15 +1,17 @@
 import mlflow
 import yaml
 import os
+import dagshub
+
 
 
 def setup_mlflow():
     # Use DAGsHub URI from environment if set, otherwise fallback to local mlruns
-    tracking_uri = os.getenv("MLFLOW_TRACKING_URI", "file:./mlruns")
-    mlflow.set_tracking_uri(tracking_uri)
+    mlflow.set_tracking_uri("https://dagshub.com/imrankhan59/Hate_Speech_Classification.mlflow")
+    dagshub.init(repo_owner='imrankhan59', repo_name='Hate_Speech_Classification', mlflow=True)
     
     # Set your experiment
-    mlflow.set_experiment("LSTM_Hate_Speech_Classification")
+    mlflow.set_experiment("LSTM_Hates_Speech_Classification")
 
 
 
@@ -26,6 +28,8 @@ def read_params(config_path: str = "params.yaml") -> dict:
     with open(config_path, "r") as f:
         params = yaml.safe_load(f)
     return params
+
+
 
 if __name__ == "__main__":
     pass

@@ -1,18 +1,18 @@
 numpy 
 pandas
-tensorflow
+tensorflow==2.15.0
 matplotlib
 seaborn
 nltk
 regex
 scikit-learn
-from-root
-google-cloud-storage
 fastapi
 uvicorn
 Jinja2
 dvc
-dvc
-mlflow
+mlflow==2.14.3
 pymongo
+pydantic
+dagshub==0.3.27
+protobuf==4.24.4
 -e .

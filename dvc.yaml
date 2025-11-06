@@ -5,7 +5,9 @@ stages:
       - src/components/data_validation.py
       - data/raw_data.csv
       - data/imb_data.csv
-
+      - src/entity/artifact_entity.py
+      - src/entity/config_entity.py
+      - src/constant/__init__.py
     outs:
       - artifacts/DataValidationArtifacts/data_validation_report.yaml
 
@@ -16,10 +18,11 @@ stages:
      - data/raw_data.csv
      - data/imb_data.csv
      - artifacts/DataValidationArtifacts/data_validation_report.yaml
-
+     - src/entity/artifact_entity.py
+     - src/entity/config_entity.py
+     - src/constant/__init__.py
     outs:
      - artifacts/DataTransformationArtifacts/transformed_data.csv
-
   
   model_trainer:
     cmd: python src/components/model_trainer.py
@@ -27,6 +30,9 @@ stages:
       - src/components/model_trainer.py
       - artifacts/DataTransformationArtifacts/transformed_data.csv
       - params.yaml
+      - src/entity/artifact_entity.py
+      - src/entity/config_entity.py
+      - src/constant/__init__.py
     
     outs:
       - artifacts/ModelTrainerArtifacts/model.h5
@@ -44,6 +50,9 @@ stages:
       - artifacts/ModelTrainerArtifacts/y_test.csv
       - tokenizer.pickle
       - params.yaml
+      - src/entity/artifact_entity.py
+      - src/entity/config_entity.py
+      - src/constant/__init__.py
 
     metrics:
       - artifacts/ModelEvaluationArtifacts/metrics.json

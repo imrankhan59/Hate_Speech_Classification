@@ -10,3 +10,5 @@ artifacts/
 !data/*.dvc
 tokenizer.pickle
 mlflow.db
+my_model.h5
+ml_env/
