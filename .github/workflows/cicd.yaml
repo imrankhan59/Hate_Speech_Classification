@@ -56,8 +56,8 @@ jobs:
       # 7️⃣ Pull data from DVC remote
       - name: Pull data from DVC
         run: |
-          dvc pull -v
-          dvc checkout
+          dvc pull data/raw_data.csv -v
+          dvc pull data/imb_data.csv -v
 
       # 8️⃣ Run the DVC pipeline
       - name: Run pipeline
