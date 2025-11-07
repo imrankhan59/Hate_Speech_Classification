@@ -3,8 +3,9 @@ import mlflow
 import yaml
 import os
 import dagshub
+from dotenv import load_dotenv
 
-
+load_dotenv()
 
 def setup_mlflow():
     # Use DAGsHub URI from environment if set, otherwise fallback to local mlruns
