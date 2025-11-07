@@ -7,6 +7,7 @@ import dagshub
 
 def setup_mlflow():
     # Use DAGsHub URI from environment if set, otherwise fallback to local mlruns
+    dagshub.auth.add_app_token(os.getenv("DAGS_HUB_TOKEN"))
     mlflow.set_tracking_uri("https://dagshub.com/imrankhan59/Hate_Speech_Classification.mlflow")
     dagshub.init(repo_owner='imrankhan59', repo_name='Hate_Speech_Classification', mlflow=True)
     
