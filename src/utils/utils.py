@@ -1,3 +1,4 @@
+import logging
 import mlflow
 import yaml
 import os
@@ -13,6 +14,7 @@ def setup_mlflow():
     
     # Set your experiment
     mlflow.set_experiment("LSTM_Hates_Speech_Classification")
+    logging.info("MLflow setup complete with DAGsHub tracking URI.")
 
 
 
