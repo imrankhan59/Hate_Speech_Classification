@@ -17,6 +17,10 @@ def setup_mlflow():
     mlflow.set_experiment("LSTM_Hates_Speech_Classification")
     logging.info("MLflow setup complete with DAGsHub tracking URI.")
 
+        # ✅ Debug log for GitHub Actions
+    print("✅ MLflow tracking URI:", mlflow.get_tracking_uri())
+    print("✅ MLflow experiment:", mlflow.get_experiment_by_name("LSTM_Hates_Speech_Classification"))
+
 
 
 def read_params(config_path: str = "params.yaml") -> dict:
