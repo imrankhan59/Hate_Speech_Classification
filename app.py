@@ -4,11 +4,11 @@ from typing import Annotated
 import pickle
 import mlflow
 from src.utils.utils import read_params
-from src.utils.text_cleaning import clean_text
+from src.utils.utils import clean_text
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from src.logger import logging
 
-mlflow.set_tracking_uri("sqlite:///mlruns_db/mlflow.db")
+mlflow.set_tracking_uri("https://dagshub.com/imrankhan59/Hate_Speech_Classification.mlflow")
 
 app = FastAPI(title="Sentiment Analysis API", version="1.0")
 
@@ -16,15 +16,16 @@ app = FastAPI(title="Sentiment Analysis API", version="1.0")
 def load_model():
     global tokenizer, prod_model, MAX_LEN
     try:
+        logging.info("Connecting to MLflow tracking server...")
+        logging.info("Loading tokenizer and production model...")
         with open('tokenizer.pickle', 'rb') as f:
             tokenizer = pickle.load(f)
-        model_uri = "models:/LSTM/Production"
-        prod_model = mlflow.keras.load_model(model_uri)
+        prod_model = mlflow.keras.load_model("models:/LSTM/Production")
         params = read_params()
         MAX_LEN = params['model']['max_len']
         logging.info("Model and tokenizer loaded successfully at startup.")
     except Exception as e:
-        logging.error(f"Failed to load model: {e}")
+        logging.error(f"Startup failed: {e}")
         raise RuntimeError("Startup failed - model not loaded.")
 
 class TextInput(BaseModel):

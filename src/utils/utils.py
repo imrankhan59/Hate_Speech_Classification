@@ -2,8 +2,17 @@ import logging
 import mlflow
 import yaml
 import os
+import pandas as pd
 import dagshub
 from dotenv import load_dotenv
+import re
+import string
+from nltk.corpus import stopwords
+import nltk
+
+stemmer = nltk.SnowballStemmer("english")
+nltk.download('stopwords')
+stopword = set(stopwords.words('english'))
 
 load_dotenv()
 
@@ -37,6 +46,26 @@ def read_params(config_path: str = "params.yaml") -> dict:
         params = yaml.safe_load(f)
     return params
 
+
+def clean_text(words: str) -> str:
+        try:
+            if pd.isna(words):
+                return ""
+            words = str(words).lower()
+            words = re.sub('', '', words)
+            words = re.sub(r'\d+', '', words)
+            words = re.sub('https?://\S+|www\.\S+', '', words)
+            words = re.sub('<.*?>+', '', words)
+            words = re.sub('[%s]' % re.escape(string.punctuation), '', words)
+            words = re.sub('\n', '', words)
+            words = re.sub('\w*\d\w*', '', words)
+            words = [w for w in words.split(' ') if w not in stopword]
+            words = " ".join(words)
+            words = [stemmer.stem(w) for w in words.split(' ')]
+            words = " ".join(words)
+            return words
+        except Exception as e:
+            logging.error(f"Error in cleaning text: {e}")
 
 
 if __name__ == "__main__":
