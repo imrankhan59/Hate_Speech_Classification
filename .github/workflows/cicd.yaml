@@ -12,7 +12,6 @@ jobs:
 
     steps:
 
-
       - name: Checkout code
         uses: actions/checkout@v3
   
@@ -24,7 +23,7 @@ jobs:
       - name: Create virtual environment
         run: |
           python -m venv venv
-          source venv/bin/activate  # On Windows use venv\Scripts\activate
+          source venv/bin/activate  
           pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest dvc mlflow
@@ -52,5 +51,13 @@ jobs:
         run: |
           source venv/bin/activate
           pytest tests/ --disable-warnings -v
+
+      - name: Build Docker image
+        run: |
+          docker build -t hate-speech-api .
+
+      - name: Test Docker container
+        run: docker run --rm hate-speech-api pytest tests/ --disable-warnings -v
+
 
 
