@@ -15,4 +15,5 @@ pymongo
 pydantic
 dagshub==0.3.27
 protobuf==4.24.4
+pytest
 -e .

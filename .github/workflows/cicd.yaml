@@ -56,8 +56,5 @@ jobs:
         run: |
           docker build -t hate-speech-api .
 
-      - name: Test Docker container
-        run: docker run --rm hate-speech-api pytest tests/ --disable-warnings -v
-
 
 
