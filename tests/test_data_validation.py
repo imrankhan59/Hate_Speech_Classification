@@ -11,7 +11,6 @@ def test_imb_data_file_exists():
     """Ensure the imbalance data file exists."""
     assert os.path.exists("data/imb_data.csv"), "imb_data.csv is missing!"
 
-
 def test_required_columns_in_raw_data():
     """Check raw_data.csv has all required columns."""
     df = pd.read_csv("data/raw_data.csv")

@@ -16,7 +16,7 @@ This project aims to build an automated machine learning model that can detect a
 
 
 
-## ⚙️ Project Architecture
+##  Project Architecture
 
 The project follows a complete end-to-end machine learning workflow. It starts with collecting and cleaning the data, then moves on to training and evaluating the model. After that, the model is tracked, versioned, and finally deployed using modern MLOps tools.
 
@@ -32,4 +32,48 @@ Below is a simple view of the pipeline:
 
 This setup makes the workflow easy to reproduce, monitor, and improve over time.
 
+##  Model and Techniques Used
 
+The project uses natural language processing (NLP) and machine learning to classify text. Here’s what we do:
+
+- **Text Preprocessing:** Clean the text by removing unnecessary characters, converting to lowercase, and removing stopwords.
+- **Feature Extraction:** Convert text into numbers that the model can understand, using techniques like word2vec.
+- **Model:** Train a machine learning model (e.g., RNN/LSTM) on the processed text.
+- **Evaluation:** Measure the model's performance using metrics like F1-score, Precision, and Recall to make sure it correctly identifies hate speech and offensive language.
+
+
+## 📁 Project Structure
+
+Here’s how the project files and folders are organized:
+
+│
+├── data/ # Raw and processed data (created during data ingestion)
+├── artifacts/ # Stores intermediate outputs like validation reports, transformed data, and trained models
+├── src/ # Source code for all components
+│ ├── components/ # Data ingestion, transformation, model training, and evaluation modules
+│ ├── configuration/ # Configuration files (e.g., DB connections)
+│ ├── constant/ # Constants used across the project
+│ ├── entity/ # Data classes for configuration and artifacts
+│ ├── exception/ # Custom exception handling
+│ ├── logger/ # Logging setup
+│ ├── pipeline/ # Training and prediction pipelines
+│ ├── ml/ # Model definitions
+│ └── utils/ # Utility functions
+│
+├── tests/ # Unit and integration tests
+│ ├── unit/
+│ └── integration/
+│
+├── experiments/ # Jupyter notebooks for experiments
+├── .github/workflows/ # GitHub Actions workflows
+├── Dockerfile # Docker configuration
+├── app.py # FastAPI application for deployment
+├── demo.py # Script for testing or demoing the model
+├── requirements.txt # Project dependencies
+├── requirements_dev.txt # Dev dependencies (testing, linting)
+├── setup.py # Optional packaging setup
+├── dvc.yaml # DVC pipeline configuration
+├── params.yaml # Parameters for pipeline stages
+├── README.md # Project documentation
+├── .gitignore # Files/folders to ignore in Git
+└── .env # Environment variables

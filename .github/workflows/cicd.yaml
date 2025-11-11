@@ -1,11 +1,9 @@
 name: ML Continuous Integration
 
 on:
-  push:
+  pull_request:
     branches:
       - main
-  pull_request:
-
 jobs:
   model-ci:
     runs-on: ubuntu-latest
